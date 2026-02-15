@@ -51,21 +51,24 @@ export function KanbanBoard({
   };
 
   return (
-    <div className="space-y-3 md:space-y-4">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
-        <h2 className="text-base md:text-lg font-semibold text-zinc-100">
-          {selectedVenture
-            ? `${ventures.find(v => v.id === selectedVenture)?.name} Board`
-            : 'All Tasks'}
-        </h2>
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div className="flex items-center gap-3">
+            <div className="w-1.5 h-6 bg-primary rounded-full shadow-[0_0_12px_var(--color-primary)]" />
+            <h2 className="text-sm md:text-base font-black text-white uppercase tracking-[0.25em]">
+              {selectedVenture
+                ? `${ventures.find(v => v.id === selectedVenture)?.name} Terminal`
+                : 'Central Command'}
+            </h2>
+        </div>
         {onCreateClick && (
           <Button
             size="sm"
             onClick={onCreateClick}
-            className="bg-blue-600 hover:bg-blue-500 text-white gap-2 w-full sm:w-auto"
+            className="bg-primary/10 hover:bg-primary text-primary hover:text-white border border-primary/30 rounded-xl px-5 py-5 gap-2 w-full sm:w-auto font-black uppercase text-[10px] tracking-widest transition-all shadow-lg hover:shadow-primary/20"
           >
             <Plus className="w-4 h-4" />
-            New Task
+            Initialize Task
           </Button>
         )}
       </div>
@@ -75,23 +78,23 @@ export function KanbanBoard({
         onDragEnd={handleDragEnd}
         onDragCancel={handleDragCancel}
       >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <KanbanColumn
-            title="Queue"
+            title="Awaiting Signal"
             status="queue"
             tasks={filteredTasks}
             ventures={ventures}
             onTaskClick={onTaskClick}
           />
           <KanbanColumn
-            title="Active"
+            title="Processing"
             status="active"
             tasks={filteredTasks}
             ventures={ventures}
             onTaskClick={onTaskClick}
           />
           <KanbanColumn
-            title="Completed"
+            title="Link Established"
             status="completed"
             tasks={filteredTasks}
             ventures={ventures}
@@ -102,7 +105,7 @@ export function KanbanBoard({
         {/* Drag Overlay */}
         <DragOverlay>
           {activeTask ? (
-            <div className="opacity-80 shadow-2xl rotate-2">
+            <div className="opacity-60 shadow-2xl rotate-1 scale-105 transition-transform duration-200">
               <TaskCard
                 task={activeTask}
                 venture={ventures.find(v => v.id === activeTask.ventureId)}

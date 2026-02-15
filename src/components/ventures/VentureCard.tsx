@@ -26,64 +26,60 @@ export function VentureCard({
   const progressPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
   const statusColors = {
-    active: 'bg-green-500/20 text-green-400 border-green-500/30',
-    paused: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-    completed: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+    active: 'bg-success/10 text-success border-success/20',
+    paused: 'bg-warning/10 text-warning border-warning/20',
+    completed: 'bg-primary/10 text-primary border-primary/20',
     archived: 'bg-zinc-800 text-zinc-500 border-zinc-700',
   };
 
   return (
     <motion.div
-      whileHover={{ y: -2, scale: 1.01 }}
+      whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
     >
-      <Card
+      <div
         onClick={onClick}
         className={cn(
-          "p-4 cursor-pointer transition-all duration-200 bg-zinc-800/50 hover:bg-zinc-800",
+          "p-4 cursor-pointer transition-all duration-300 rounded-2xl border backdrop-blur-md",
           selected
-            ? "border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.2)] bg-zinc-800"
-            : "border-zinc-800 hover:border-zinc-700"
+            ? "bg-primary/5 border-primary shadow-[0_0_20px_rgba(var(--color-primary),0.1)]"
+            : "bg-white/5 border-white/5 hover:border-white/10 hover:bg-white/10"
         )}
       >
         {/* Header: Name */}
         <div className="flex items-center gap-3 mb-3">
-          <h3 className="text-sm font-semibold text-zinc-100 flex-1 line-clamp-1">
+          <h3 className="text-xs font-black text-white flex-1 line-clamp-1 uppercase tracking-tight">
             {venture.name}
           </h3>
-        </div>
-
-        {/* Status Badge + Active Task Count */}
-        <div className="flex items-center gap-2 mb-4">
-          <Badge variant="outline" className={cn("text-[10px] px-1.5 py-0", statusColors[venture.status as keyof typeof statusColors])}>
-            {venture.status.toUpperCase()}
+          <Badge variant="outline" className={cn("text-[8px] font-black px-1.5 py-0 border-[0.5px]", statusColors[venture.status as keyof typeof statusColors])}>
+            {venture.status}
           </Badge>
-          {activeTasks > 0 && (
-            <span className="text-[10px] text-zinc-500 font-medium">
-              {activeTasks} ACTIVE
-            </span>
-          )}
         </div>
 
         {/* Progress Bar */}
         {totalTasks > 0 && (
           <div className="mb-4">
-            <div className="flex items-center justify-between text-[10px] text-zinc-500 mb-1.5 font-bold uppercase tracking-wider">
-              <span>Progress</span>
-              <span>{Math.round(progressPercentage)}%</span>
+            <div className="flex items-center justify-between text-[9px] text-zinc-500 mb-2 font-black uppercase tracking-widest">
+              <span>Sync</span>
+              <span className="text-zinc-400">{Math.round(progressPercentage)}%</span>
             </div>
-            <Progress value={progressPercentage} className="h-1.5 bg-zinc-900" />
+            <div className="h-1 bg-black/40 rounded-full overflow-hidden">
+                <div 
+                    className="h-full bg-primary transition-all duration-1000" 
+                    style={{ width: `${progressPercentage}%` }} 
+                />
+            </div>
           </div>
         )}
 
-        {/* Capital Spent */}
-        <div className="flex justify-between items-center pt-1 border-t border-zinc-800/50 mt-1">
-          <span className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider">Investment</span>
-          <span className="text-xs text-blue-400 font-mono">{formatCurrency(venture.capitalSpent || venture.capitalAllocated || 0)}</span>
+        {/* Investment */}
+        <div className="flex justify-between items-center pt-3 border-t border-white/5">
+          <span className="text-[8px] text-zinc-600 uppercase font-black tracking-[0.2em]">Investment</span>
+          <span className="text-[10px] text-primary font-black tracking-tighter">{formatCurrency(venture.capitalSpent || venture.capitalAllocated || 0)}</span>
         </div>
-      </Card>
+      </div>
     </motion.div>
   );
 }

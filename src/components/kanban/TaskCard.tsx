@@ -23,69 +23,68 @@ export function TaskCard({ task, venture, onClick }: TaskCardProps) {
     <motion.div
       ref={setNodeRef}
       layoutId={task.id}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ scale: 1.02 }}
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      whileHover={{ scale: 1.02, y: -4 }}
       whileTap={{ scale: 0.98 }}
       style={{
         transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
-        opacity: isDragging ? 0.5 : 1,
-        zIndex: isDragging ? 50 : 1,
+        opacity: isDragging ? 0.3 : 1,
+        zIndex: isDragging ? 100 : 1,
       }}
       {...listeners}
       {...attributes}
       onClick={onClick}
-      className="cursor-pointer"
+      className="cursor-pointer group"
     >
-      <Card className="p-4 bg-zinc-800 border-zinc-700 hover:border-zinc-500 hover:shadow-lg transition-all duration-200">
+      <div className="p-5 bg-card/40 backdrop-blur-md border border-white/5 hover:border-primary/40 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-primary/10 relative overflow-hidden">
+        {/* Glow Effect on Hover */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        
+        {/* Priority Indicator Dot */}
+        <div className="absolute top-5 right-5 flex items-center gap-1.5">
+            <div className="w-1.5 h-1.5 rounded-full shadow-[0_0_8px_currentColor]" style={{ color: priorityColor, backgroundColor: priorityColor }} />
+            <span className="text-[9px] font-black uppercase tracking-widest" style={{ color: priorityColor }}>{task.priority}</span>
+        </div>
+
         {/* Title */}
-        <h3 className="text-sm font-semibold text-white mb-2 line-clamp-2">
+        <h3 className="text-sm font-bold text-white mb-3 line-clamp-2 uppercase tracking-tight group-hover:text-primary transition-colors">
           {task.title}
         </h3>
 
-        {/* Venture + Priority */}
-        <div className="flex items-center gap-2 mb-3">
+        {/* Venture + Meta */}
+        <div className="flex flex-wrap items-center gap-2 mb-4">
           {venture && (
-            <Badge variant="outline" className="text-xs border-zinc-600 bg-zinc-900/50">
+            <div className="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest bg-primary/10 text-primary border border-primary/20">
               {venture.name}
-            </Badge>
+            </div>
           )}
-          <Badge 
-            variant="outline" 
-            className="text-xs font-bold"
-            style={{ 
-              borderColor: `${priorityColor}50`,
-              color: priorityColor,
-              backgroundColor: `${priorityColor}10`
-            }}
-          >
-            {task.priority.toUpperCase()}
-          </Badge>
         </div>
 
-        {/* Estimates */}
-        <div className="flex items-center gap-3 text-xs text-zinc-400">
-          {task.estimatedCost && (
-            <span className="flex items-center gap-1">{formatCurrency(task.estimatedCost)}</span>
-          )}
-          {task.estimatedTokens && (
-            <span className="flex items-center gap-1">{(task.estimatedTokens / 1000).toFixed(0)}k tokens</span>
-          )}
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 gap-3 pt-4 border-t border-white/5">
+          <div className="space-y-1">
+            <p className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">Resource</p>
+            <p className="text-[10px] font-bold text-zinc-400">{task.estimatedCost ? formatCurrency(task.estimatedCost) : '---'}</p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">Compute</p>
+            <p className="text-[10px] font-bold text-zinc-400">{task.estimatedTokens ? `${(task.estimatedTokens / 1000).toFixed(0)}k` : '---'}</p>
+          </div>
         </div>
 
         {/* Tags */}
         {task.tags && task.tags.length > 0 && (() => {
-          // Parse tags if they're stored as JSON string
           const tagsArray = typeof task.tags === 'string'
             ? JSON.parse(task.tags)
             : task.tags;
 
           return (
-            <div className="mt-3 flex flex-wrap gap-1">
+            <div className="mt-4 flex flex-wrap gap-1.5">
               {tagsArray.slice(0, 3).map((tag: string) => (
                 <span
                   key={tag}
-                  className="inline-block px-1.5 py-0.5 text-[10px] bg-zinc-900 text-zinc-400 rounded border border-zinc-800"
+                  className="px-2 py-0.5 text-[8px] font-black uppercase tracking-widest bg-white/5 text-zinc-500 rounded-full border border-white/5 group-hover:border-white/10 transition-colors"
                 >
                   {tag}
                 </span>
@@ -93,7 +92,7 @@ export function TaskCard({ task, venture, onClick }: TaskCardProps) {
             </div>
           );
         })()}
-      </Card>
+      </div>
     </motion.div>
   );
 }

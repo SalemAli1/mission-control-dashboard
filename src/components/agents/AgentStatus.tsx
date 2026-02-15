@@ -17,46 +17,49 @@ export function AgentStatus({ agent, compact = false }: AgentStatusProps) {
 
   if (compact) {
     return (
-      <div className="flex items-center gap-2 text-sm">
+      <div className="flex items-center gap-2 group cursor-pointer py-1">
         <div
-          className={`w-2 h-2 rounded-full ${statusColor} ${
-            agent.status === 'busy' ? 'animate-pulse-slow' : ''
+          className={`w-1.5 h-1.5 rounded-full ${statusColor} ${
+            agent.status === 'busy' ? 'animate-pulse-slow' : 'shadow-[0_0_8px_currentColor]'
           }`}
+          style={{ color: `var(--color-${agent.status === 'offline' ? 'zinc-500' : agent.status})` }}
         />
-        <span className="text-white">{agent.name}</span>
-        <span className="text-zinc-500">-</span>
-        <span className="text-zinc-400 capitalize">{agent.status}</span>
+        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 group-hover:text-white transition-colors">{agent.name}</span>
       </div>
     );
   }
 
   return (
-    <div className="p-3 bg-zinc-800 rounded-lg border border-zinc-700">
+    <div className="p-4 bg-white/5 backdrop-blur-md rounded-2xl border border-white/5 hover:border-white/10 transition-all group shadow-xl">
       {/* Name + Status */}
-      <div className="flex items-center gap-2 mb-2">
-        <div
-          className={`w-2 h-2 rounded-full ${statusColor} ${
-            agent.status === 'busy' ? 'animate-pulse-slow' : ''
-          }`}
-        />
-        <span className="text-sm font-semibold text-white">{agent.name}</span>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+            <div
+            className={`w-1.5 h-1.5 rounded-full ${statusColor} ${
+                agent.status === 'busy' ? 'animate-pulse-slow' : 'shadow-[0_0_8px_currentColor]'
+            }`}
+            style={{ color: `var(--color-${agent.status === 'offline' ? 'zinc-500' : agent.status})` }}
+            />
+            <span className="text-xs font-black uppercase tracking-widest text-white">{agent.name}</span>
+        </div>
+        <span className="text-[8px] font-black uppercase tracking-widest text-zinc-500">{agent.status}</span>
       </div>
 
       {/* Model */}
-      <div className="text-xs text-zinc-400 mb-2">{agent.model}</div>
+      <div className="text-[10px] font-bold text-primary mb-3 uppercase tracking-tight">{agent.model}</div>
 
       {/* Token Usage */}
-      <div className="space-y-1">
-        <div className="flex items-center justify-between text-xs text-zinc-400">
-          <span>Tokens</span>
-          <span>
-            {(agent.tokensUsed / 1000).toFixed(0)}k/{(agent.tokensTotal / 1000).toFixed(0)}k ({tokenPercentage}%)
+      <div className="space-y-2 mb-3">
+        <div className="flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-zinc-500">
+          <span>Neural Load</span>
+          <span className="text-zinc-400">
+            {tokenPercentage}%
           </span>
         </div>
-        <div className="h-1.5 bg-zinc-700 rounded-full overflow-hidden">
+        <div className="h-1 bg-white/5 rounded-full overflow-hidden">
           <div
-            className={`h-full transition-all ${
-              tokenPercentage > 80 ? 'bg-error' : tokenPercentage > 50 ? 'bg-warning' : 'bg-success'
+            className={`h-full transition-all duration-1000 ${
+              tokenPercentage > 80 ? 'bg-error' : tokenPercentage > 50 ? 'bg-warning' : 'bg-primary'
             }`}
             style={{ width: `${tokenPercentage}%` }}
           />
@@ -65,9 +68,9 @@ export function AgentStatus({ agent, compact = false }: AgentStatusProps) {
 
       {/* Current Task */}
       {agent.currentTask && (
-        <div className="mt-2 text-xs text-zinc-400">
-          Working on:{' '}
-          <span className="text-white font-medium">{agent.currentTask}</span>
+        <div className="pt-3 border-t border-white/5">
+            <p className="text-[8px] font-black text-zinc-600 uppercase tracking-widest mb-1">Active Pipeline</p>
+            <p className="text-[10px] font-bold text-zinc-300 truncate tracking-tight">{agent.currentTask}</p>
         </div>
       )}
     </div>

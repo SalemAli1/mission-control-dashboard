@@ -37,34 +37,39 @@ export function VentureList({ ventures, tasks, selectedId, onSelect }: VentureLi
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {/* "All Ventures" option */}
       <button
         onClick={() => onSelect(null)}
-        className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+        className={`w-full text-left px-4 py-3 rounded-xl text-xs font-black uppercase tracking-[0.2em] transition-all border ${
           selectedId === null
-            ? 'bg-zinc-800 text-white font-medium'
-            : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-white'
+            ? 'bg-primary/20 text-white border-primary/30 shadow-[0_0_15px_rgba(var(--color-primary),0.1)]'
+            : 'text-zinc-500 border-transparent hover:bg-white/5 hover:text-white'
         }`}
       >
-        All Ventures
+        <div className="flex items-center gap-3">
+            <div className={`w-1 h-1 rounded-full ${selectedId === null ? 'bg-primary' : 'bg-zinc-700'}`} />
+            Global Overview
+        </div>
       </button>
 
       {/* Venture cards */}
-      {sortedVentures.map((venture) => {
-        const stats = getVentureStats(venture.id);
-        return (
-          <VentureCard
-            key={venture.id}
-            venture={venture}
-            selected={selectedId === venture.id}
-            onClick={() => onSelect(venture.id)}
-            activeTasks={stats.active}
-            completedTasks={stats.completed}
-            totalTasks={stats.total}
-          />
-        );
-      })}
+      <div className="space-y-3">
+        {sortedVentures.map((venture) => {
+            const stats = getVentureStats(venture.id);
+            return (
+            <VentureCard
+                key={venture.id}
+                venture={venture}
+                selected={selectedId === venture.id}
+                onClick={() => onSelect(venture.id)}
+                activeTasks={stats.active}
+                completedTasks={stats.completed}
+                totalTasks={stats.total}
+            />
+            );
+        })}
+      </div>
     </div>
   );
 }

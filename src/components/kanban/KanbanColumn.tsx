@@ -23,24 +23,27 @@ export function KanbanColumn({ title, status, tasks, ventures, onTaskClick }: Ka
   return (
     <div
       ref={setNodeRef}
-      className={`flex flex-col min-h-[300px] md:min-h-[400px] bg-zinc-900 rounded-lg border ${
-        isOver ? 'border-blue-500 border-dashed' : 'border-zinc-800'
-      } transition-colors`}
+      className={`flex flex-col min-h-[300px] md:min-h-[500px] glass-dark rounded-2xl border transition-all duration-300 ${
+        isOver ? 'border-primary/50 bg-primary/5 scale-[1.01] shadow-2xl' : 'border-white/5'
+      }`}
     >
       {/* Column Header */}
-      <div className="sticky top-0 bg-zinc-900 border-b border-zinc-800 px-3 md:px-4 py-2.5 md:py-3 z-10">
+      <div className="p-4 border-b border-white/5 bg-white/5 backdrop-blur-md rounded-t-2xl">
         <div className="flex items-center justify-between">
-          <h2 className="text-xs md:text-sm font-semibold text-white uppercase tracking-wide">
-            {title}
-          </h2>
-          <span className="text-xs font-medium text-zinc-500 bg-zinc-800 px-2 py-1 rounded">
+          <div className="flex items-center gap-2">
+            <div className={`w-1.5 h-1.5 rounded-full ${status === 'active' ? 'bg-primary animate-pulse' : status === 'completed' ? 'bg-success' : 'bg-zinc-600'}`} />
+            <h2 className="text-[10px] md:text-xs font-black text-white uppercase tracking-[0.2em]">
+              {title}
+            </h2>
+          </div>
+          <span className="text-[10px] font-black text-zinc-400 bg-white/5 px-2.5 py-1 rounded-full border border-white/5">
             {columnTasks.length}
           </span>
         </div>
       </div>
 
       {/* Task List */}
-      <div className="flex-1 p-3 md:p-4 space-y-2 md:space-y-3 overflow-y-auto custom-scrollbar">
+      <div className="flex-1 p-4 space-y-4 overflow-y-auto custom-scrollbar bg-black/10">
         {columnTasks.length > 0 ? (
           columnTasks.map((task) => {
             const venture = ventures.find(v => v.id === task.ventureId);
@@ -54,8 +57,9 @@ export function KanbanColumn({ title, status, tasks, ventures, onTaskClick }: Ka
             );
           })
         ) : (
-          <div className="flex items-center justify-center h-32 text-sm text-zinc-500">
-            No tasks in {title.toLowerCase()}
+          <div className="flex flex-col items-center justify-center h-48 text-[10px] text-zinc-600 font-black uppercase tracking-widest gap-2">
+             <div className="w-1 h-1 bg-zinc-800 rounded-full" />
+             Sector Empty
           </div>
         )}
       </div>

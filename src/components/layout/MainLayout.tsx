@@ -35,7 +35,7 @@ export function MainLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-zinc-950">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <Header
         capital={capital}
@@ -47,15 +47,9 @@ export function MainLayout({
       {/* Mobile backdrop */}
       {sidebarOpen && (
         <div
-          className="md:hidden fixed inset-0 bg-black/50 z-40 cursor-pointer"
+          className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40 cursor-pointer"
           onClick={(e) => {
             e.stopPropagation();
-            console.log('Backdrop clicked!'); // Debug log
-            setSidebarOpen(false);
-          }}
-          onTouchEnd={(e) => {
-            e.stopPropagation();
-            console.log('Backdrop touched!'); // Debug log
             setSidebarOpen(false);
           }}
         />
@@ -64,8 +58,8 @@ export function MainLayout({
       {/* Sidebar - Overlay on mobile, static on desktop */}
       <div className={`
         fixed md:fixed top-0 left-0 h-full z-50 md:z-auto
-        transition-transform duration-300 ease-in-out
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        transition-all duration-300 ease-in-out
+        ${sidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0'}
       `}>
         <Sidebar
           ventures={ventures}
@@ -79,11 +73,11 @@ export function MainLayout({
         />
       </div>
 
-      {/* Mobile menu button - only show when sidebar is closed */}
+      {/* Mobile menu button */}
       {!sidebarOpen && (
         <button
           onClick={() => setSidebarOpen(true)}
-          className="md:hidden fixed top-4 left-4 z-[60] bg-zinc-800 text-white p-2.5 rounded-lg shadow-lg hover:bg-zinc-700 transition-all active:scale-95 border border-zinc-700"
+          className="md:hidden fixed top-3 left-3 z-[60] bg-primary/20 hover:bg-primary/30 text-primary p-2.5 rounded-xl backdrop-blur-md border border-primary/20 shadow-lg transition-all active:scale-95"
           aria-label="Open menu"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -93,8 +87,8 @@ export function MainLayout({
       )}
 
       {/* Main Content Area */}
-      <main className="pt-16 md:pl-[280px] min-h-screen">
-        <div className="p-3 sm:p-4 md:p-6">
+      <main className="pt-20 md:pl-[280px] min-h-screen">
+        <div className="max-w-[1600px] mx-auto p-4 sm:p-6 md:p-8">
           {children}
         </div>
       </main>

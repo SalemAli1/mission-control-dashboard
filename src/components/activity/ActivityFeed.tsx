@@ -27,17 +27,17 @@ export function ActivityFeed({
   const displayedActivities = activities.slice(0, maxItems);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full glass-dark rounded-2xl border border-white/5 overflow-hidden shadow-2xl">
       {/* Header */}
-      <div className="pb-3 md:pb-4 border-b border-zinc-800">
-        <h2 className="text-base md:text-lg font-bold text-zinc-100 tracking-tight">Recent Activity</h2>
-        <div className="flex items-center gap-2 mt-1">
-          <span className="relative flex h-1.5 w-1.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
+      <div className="p-5 border-b border-white/5 bg-white/5">
+        <h2 className="text-xs font-black text-primary uppercase tracking-[0.2em]">Telemetry Feed</h2>
+        <div className="flex items-center gap-2 mt-2">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
           </span>
-          <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest">
-            Live Feed • {displayedActivities.length} EVENTS
+          <p className="text-[10px] text-zinc-500 uppercase font-black tracking-widest">
+            {displayedActivities.length} Pulse Events Detected
           </p>
         </div>
       </div>
@@ -45,7 +45,7 @@ export function ActivityFeed({
       {/* Activity List */}
       <div
         ref={feedRef}
-        className="flex-1 mt-3 md:mt-4 space-y-2 md:space-y-3 overflow-y-auto custom-scrollbar max-h-[400px] md:max-h-[600px] pb-6"
+        className="flex-1 p-4 space-y-3 overflow-y-auto custom-scrollbar max-h-[400px] md:max-h-[700px] bg-black/20"
       >
         <AnimatePresence initial={false} mode="popLayout">
           {displayedActivities.length > 0 ? (
@@ -53,8 +53,11 @@ export function ActivityFeed({
               <ActivityItem key={activity.id} activity={activity} />
             ))
           ) : (
-            <div className="flex items-center justify-center h-32 text-sm text-zinc-600 border border-dashed border-zinc-800 rounded-lg">
-              Waiting for signal...
+            <div className="flex flex-col items-center justify-center h-48 text-[10px] text-zinc-600 font-black uppercase tracking-widest gap-3 border-2 border-dashed border-white/5 rounded-2xl">
+              <div className="w-8 h-8 rounded-full border border-zinc-800 animate-pulse flex items-center justify-center">
+                  <div className="w-1 h-1 bg-zinc-700 rounded-full" />
+              </div>
+              Awaiting Signal...
             </div>
           )}
         </AnimatePresence>
