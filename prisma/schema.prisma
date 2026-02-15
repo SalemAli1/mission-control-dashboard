@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Venture {
+  id            String   @id @default(cuid())
+  name          String
+  icon          String
+  status        String   // 'active' | 'paused' | 'completed'
+  priority      String   // 'low' | 'medium' | 'high'
+  capitalSpent  Float    @default(0)
+  capitalBudget Float
+  description   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  tasks         Task[]
+  activities    Activity[]
+}
+
+model Task {
+  id              String   @id @default(cuid())
+  title           String
+  description     String?
+  status          String   // 'queue' | 'active' | 'completed'
+  priority        String   // 'low' | 'medium' | 'high'
+  estimatedCost   Float?
+  actualCost      Float?
+  estimatedTokens Int?
+  actualTokens    Int?
+  tags            String?  // JSON array stored as string
+  output          String?
+  error           String?
+  assignedTo      String?  // Agent ID
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  completedAt     DateTime?
+
+  ventureId       String
+  venture         Venture  @relation(fields: [ventureId], references: [id], onDelete: Cascade)
+
+  activities      Activity[]
+}
+
+model Agent {
+  id              String   @id @default(cuid())
+  name            String
+  status          String   // 'online' | 'offline' | 'busy' | 'error'
+  model           String
+  currentTask     String?
+  tokensUsed      Int      @default(0)
+  maxTokens       Int      @default(200000)
+  sessionsCount   Int      @default(0)
+  lastActiveAt    DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  activities      Activity[]
+}
+
+model Activity {
+  id          String   @id @default(cuid())
+  type        String   // 'task_created' | 'task_completed' | 'agent_status_changed' | 'capital_spent' | 'error'
+  title       String
+  description String?
+  level       String   // 'info' | 'success' | 'warning' | 'error'
+  metadata    String?  // JSON stored as string
+  createdAt   DateTime @default(now())
+
+  ventureId   String?
+  venture     Venture? @relation(fields: [ventureId], references: [id], onDelete: SetNull)
+
+  taskId      String?
+  task        Task?    @relation(fields: [taskId], references: [id], onDelete: SetNull)
+
+  agentId     String?
+  agent       Agent?   @relation(fields: [agentId], references: [id], onDelete: SetNull)
+}

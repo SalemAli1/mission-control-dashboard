@@ -1,0 +1,134 @@
+import { PrismaClient } from '@prisma/client';
+import { PrismaLibSql } from '@prisma/adapter-libsql';
+import { createClient } from '@libsql/client';
+
+async function main() {
+  const libsql = createClient({
+    url: `file:${process.cwd()}/prisma/dev.db`,
+  });
+
+  const adapter = new PrismaLibSql(libsql);
+  const prisma = new PrismaClient({ adapter });
+
+  console.log('🌱 Seeding database...');
+
+  // Create ventures
+  const ecommerce = await prisma.venture.create({
+    data: {
+      name: 'E-Commerce Automation',
+      icon: '🛍️',
+      status: 'active',
+      priority: 'high',
+      capitalBudget: 80,
+      capitalSpent: 0,
+      description: 'Automated product research, listing, and optimization',
+    },
+  });
+
+  const allbirds = await prisma.venture.create({
+    data: {
+      name: 'Allbirds Automation',
+      icon: '👟',
+      status: 'active',
+      priority: 'medium',
+      capitalBudget: 40,
+      capitalSpent: 0,
+      description: 'Monitor Allbirds inventory and pricing',
+    },
+  });
+
+  console.log('✅ Created ventures:', ecommerce.name, allbirds.name);
+
+  // Create agents
+  const mainAgent = await prisma.agent.create({
+    data: {
+      id: 'agent-main',
+      name: 'Main Agent',
+      status: 'online',
+      model: 'claude-sonnet-4-5',
+      tokensUsed: 45000,
+      maxTokens: 200000,
+    },
+  });
+
+  const telegramBot = await prisma.agent.create({
+    data: {
+      id: 'agent-telegram',
+      name: 'Telegram Bot',
+      status: 'online',
+      model: 'gemini-3-flash',
+      tokensUsed: 12000,
+      maxTokens: 1000000,
+    },
+  });
+
+  console.log('✅ Created agents:', mainAgent.name, telegramBot.name);
+
+  // Create tasks
+  const task1 = await prisma.task.create({
+    data: {
+      title: 'Set up web scraper for Allbirds product pages',
+      description: 'Create a Python scraper to monitor Allbirds product availability and pricing',
+      status: 'queue',
+      priority: 'high',
+      estimatedCost: 5,
+      ventureId: allbirds.id,
+      tags: JSON.stringify(['scraping', 'python', 'allbirds']),
+    },
+  });
+
+  const task2 = await prisma.task.create({
+    data: {
+      title: 'Research profitable product niches',
+      description: 'Analyze trending products on Amazon and identify profitable niches with low competition',
+      status: 'queue',
+      priority: 'high',
+      estimatedCost: 8,
+      ventureId: ecommerce.id,
+      tags: JSON.stringify(['research', 'amazon', 'analysis']),
+    },
+  });
+
+  const task3 = await prisma.task.create({
+    data: {
+      title: 'Build product listing optimizer',
+      description: 'Create tool to optimize product titles, descriptions, and keywords for better visibility',
+      status: 'queue',
+      priority: 'medium',
+      estimatedCost: 10,
+      ventureId: ecommerce.id,
+      tags: JSON.stringify(['optimization', 'seo', 'automation']),
+    },
+  });
+
+  console.log('✅ Created tasks:', task1.title, task2.title, task3.title);
+
+  // Create initial activities
+  await prisma.activity.create({
+    data: {
+      type: 'task_created',
+      title: 'Tasks initialized',
+      description: 'Initial tasks added to the queue',
+      level: 'info',
+    },
+  });
+
+  await prisma.activity.create({
+    data: {
+      type: 'agent_status_changed',
+      title: 'Agents online',
+      description: 'Main Agent and Telegram Bot are now online',
+      level: 'success',
+    },
+  });
+
+  console.log('✅ Created initial activities');
+  console.log('🎉 Database seeded successfully!');
+  await prisma.$disconnect();
+}
+
+main()
+  .catch((e) => {
+    console.error('❌ Error seeding database:', e);
+    process.exit(1);
+  });
